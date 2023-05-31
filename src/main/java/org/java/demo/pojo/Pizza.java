@@ -1,4 +1,4 @@
-package org.java.demo.controller;
+package org.java.demo.pojo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +17,7 @@ public class Pizza {
 	private String imgUrl;
 	private int price;
 	
-	public Pizza () {}
+	public Pizza () { }
 	
 	public Pizza(String name, String description, String imgUrl, int price) {
 		
@@ -66,5 +66,12 @@ public class Pizza {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "[" + getId() + getName() + getDescription() + getPrice();
 	}
 }
