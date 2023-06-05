@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Pizza {
@@ -12,14 +16,21 @@ public class Pizza {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+
+	@Size(min = 3, message = "il nome deve essere di almeno 3 caratteri")
 	private String name;
+	@NotBlank
+	@Size(min = 5)
 	private String description;
+	@NotBlank
 	private String imgUrl;
-	private int price;
+	@Min(0)
+	@NotNull
+	private Integer price;
 	
 	public Pizza () { }
 	
-	public Pizza(String name, String description, String imgUrl, int price) {
+	public Pizza(String name, String description, String imgUrl, Integer price) {
 		
 		setName(name);
 		setDescription(description);
@@ -60,11 +71,11 @@ public class Pizza {
 		this.imgUrl = imgUrl;
 	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 	

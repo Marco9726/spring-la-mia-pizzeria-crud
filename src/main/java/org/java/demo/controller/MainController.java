@@ -8,11 +8,15 @@ import org.java.demo.serv.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class MainController {
@@ -56,18 +60,85 @@ public class MainController {
 	}
 	
 	@GetMapping("/pizze/new")
-	public String createNewPizza() {
+	public String createNewPizza(Model model) {
+		
+		model.addAttribute("pizza", new Pizza());
 		
 		return "pizza-new";
 	}
 	
 	@PostMapping("pizze/new")
 	public String storeNewPizza(
-			@ModelAttribute Pizza pizza
+			Model model,
+			@Valid @ModelAttribute Pizza pizza,
+			BindingResult bindingResult
 			)  {
-		pizzaService.save(pizza);
+		if (bindingResult.hasErrors()) {
+			
+			for ( ObjectError err : bindingResult.getAllErrors())
+				System.err.println(err.getDefaultMessage());
+			
+			model.addAttribute("pizza", pizza);
+			model.addAttribute("errors", bindingResult);
+			
+			return "pizza-new";
+		}
 		
+		pizzaService.save(pizza);		
 		return "redirect:/";
 	}
 	
+	@GetMapping("/pizze/update/{id}")
+	public String getPizzaUpdate(
+			Model model,
+			@PathVariable int id
+			) {
+		
+		Optional<Pizza> pizzaOpt = pizzaService.findById(id);
+		Pizza pizza = pizzaOpt.get();
+		
+		model.addAttribute("pizza", pizza);
+		
+		return "pizza-update";
+		
+	}
+	
+	@PostMapping("/pizze/update/{id}")
+	public String storePizzaUpdated(
+			Model model,
+			@Valid @ModelAttribute Pizza pizza,
+			BindingResult bindingResult
+			) {
+		
+		if (bindingResult.hasErrors()) {
+			
+			for ( ObjectError err : bindingResult.getAllErrors())
+				System.err.println(err.getDefaultMessage());
+			
+			model.addAttribute("pizza", pizza);
+			model.addAttribute("errors", bindingResult);
+			
+			return "pizza-update";
+		}
+		
+		pizzaService.save(pizza);
+		
+		return "redirect:/";
+		
+	}
+
+	@GetMapping("/pizze/delete/{id}")
+	public String deletePizza(
+			@PathVariable int id
+			) {
+		
+		Optional<Pizza> pizzaOpt = pizzaService.findById(id);
+		Pizza pizza = pizzaOpt.get();
+		
+		pizzaService.delete(pizza);
+		
+		return "redirect:/";
+		
+	}
+		
 }

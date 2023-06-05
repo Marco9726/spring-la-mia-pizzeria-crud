@@ -23,6 +23,9 @@
 		 	</a>
 		 	<img width="200px" th:src="*{imgUrl}">
 		 	[[ *{description} ]]
+		 	<br>
+		 	<a th:href="@{/pizze/update/{id} (id=*{id})}" >MODIFICA</a>
+		 	<a th:href="@{/pizze/update/{id} (id=*{id})}" >ELIMINA</a>
 		 </li>
 	</ul>
 	<h2 th:unless="${pizze.size() > 0}">Non sono presenti pizze</h2>
